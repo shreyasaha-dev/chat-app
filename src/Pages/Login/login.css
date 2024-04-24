@@ -1,0 +1,24 @@
+.total-login {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+.login-middle {
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 30px 20px;
+  box-shadow: 0 0 20px rgb(187, 186, 186);
+  border-radius: 10px;
+}
+.login-middle > h1 {
+  color: #24472e;
+}
+.login-middle > p {
+  margin: 20px 0 30px;
+  color: rgb(129, 128, 128);
+  font-size: 20px;
+}

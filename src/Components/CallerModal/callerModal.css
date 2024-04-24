@@ -1,0 +1,33 @@
+.total-modal {
+  padding: 10px 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
+}
+.total-modal > img {
+  margin: 10px 0 20px;
+  width: 150px;
+  height: 150px;
+}
+.total-modal > h2 {
+  color: gray;
+}
+.total-modal > button {
+  padding: 10px 20px;
+  background-color: red;
+  color: white;
+  border: none;
+  font-size: 17px;
+  font-weight: bold;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+.total-modal > button:hover {
+  background-color: rgb(165, 13, 13);
+}
+.total-modal > button > span {
+  margin-left: 10px;
+}

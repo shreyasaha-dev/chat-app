@@ -1,0 +1,40 @@
+.receiver-top-section {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-end;
+}
+.total-receiver-card > img {
+  width: 40px;
+  height: 40px;
+  margin-left: 15px;
+}
+.receiver-left-section {
+  background-color: #b0edc4;
+  padding: 20px;
+  border-radius: 8px;
+}
+.receiver-left-section > h4 > span {
+  color: #71b689;
+}
+.receiver-left-section > h4 {
+  color: #24472e;
+}
+.receiver-left-section > p {
+  margin-top: 10px;
+  color: #24472e;
+  font-size: 16px;
+}
+.total-receiver-card {
+  margin-bottom: 20px;
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+}
+.receiver-top-section > p {
+  font-size: 13px;
+  margin-top: 5px;
+  color: rgb(70, 67, 67);
+  text-align: left;
+}
