@@ -4,6 +4,7 @@ import { db, signInWithGooglePopup } from "../../utils/firebase.utils";
 import { useDispatch, useSelector } from "react-redux";
 import { storeMeData } from "../../store/Reducer/meDataReducer";
 import { doc, setDoc } from "firebase/firestore";
+import { BsWechat } from "react-icons/bs";
 const Login = () => {
   const meData = useSelector((state) => state.meData);
   const dispatch = useDispatch();
@@ -30,9 +31,18 @@ const Login = () => {
   return (
     <div className="total-login">
       <div className="login-middle">
-        <h1>Login</h1>
-        <p>Please login to start.</p>
-        <button onClick={logGoogleUser}>Sign In With Google</button>
+        <span className="logo">
+          <BsWechat />
+        </span>
+        <h1>Let's Chat</h1>
+        <p>Please login to start</p>
+        <button onClick={logGoogleUser}>
+          <img
+            src={require("../../images/Logo-google-icon-PNG.png")}
+            alt="google-logo"
+          />
+          Sign In With Google
+        </button>
       </div>
     </div>
   );
