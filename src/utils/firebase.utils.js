@@ -1,6 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
+import { getStorage } from "firebase/storage";
 const firebaseConfig = {
   apiKey: "AIzaSyCJoOzHU4_Y1eJkWT3U8LEsVCJWsZdNkrI",
   authDomain: "chat-421015.firebaseapp.com",
@@ -12,6 +13,7 @@ const firebaseConfig = {
 
 const firebaseApp = initializeApp(firebaseConfig);
 export const db = getFirestore(firebaseApp);
+export const storage = getStorage(firebaseApp);
 const provider = new GoogleAuthProvider();
 
 provider.setCustomParameters({

@@ -14,13 +14,14 @@ import CallerModal from "../../Components/CallerModal";
 import Swal from "sweetalert2";
 import { useDispatch, useSelector } from "react-redux";
 import { resetMeData, storeMeData } from "../../store/Reducer/meDataReducer";
-import { db } from "../../utils/firebase.utils";
+import { db, storage } from "../../utils/firebase.utils";
 import { ImCross } from "react-icons/im";
 import {
   Timestamp,
   addDoc,
   collection,
   onSnapshot,
+  orderBy,
   query,
   where,
 } from "firebase/firestore";
@@ -31,6 +32,14 @@ import {
   storeSelectedUid,
 } from "../../store/Reducer/selectedUserReducer";
 import Picker from "emoji-picker-react";
+import {
+  getDownloadURL,
+  getStorage,
+  ref,
+  uploadBytes,
+  uploadBytesResumable,
+} from "firebase/storage";
+import { v4 as uuidv4 } from "uuid";
 const Home = () => {
   const [searchValue, setSearchValue] = useState("");
   const userData = useSelector((state) => state.userData);
@@ -48,6 +57,8 @@ const Home = () => {
   const inputImage = useRef(null);
   const [document, setDocument] = useState("");
   const inputDoc = useRef(null);
+  const [allMessages, setAllMessages] = useState([]);
+  // getting all logged in users(without me data) from firestore to show it in the side bar
   useEffect(() => {
     const q = query(
       collection(db, "users"),
@@ -81,9 +92,11 @@ const Home = () => {
       setAllUserData(userData);
     }
   }, [searchValue, userData]);
+  // store selected user uid to fetch details
   const clickedUser = (uid) => {
     dispatch(storeSelectedUid(uid));
   };
+  // fetch details of the selected user from firestore
   useEffect(() => {
     const q = query(
       collection(db, "users"),
@@ -106,6 +119,7 @@ const Home = () => {
   const handleFileUpload = (e) => {
     const { files } = e.target;
     setDocument(files[0]);
+    setImage("");
   };
   const imageUpload = () => {
     inputImage.current.click();
@@ -114,7 +128,6 @@ const Home = () => {
     let reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onload = function () {
-      console.log(reader.result);
       setPreviewImage(reader.result);
     };
     reader.onerror = function (error) {
@@ -125,23 +138,93 @@ const Home = () => {
     const { files } = e.target;
     setImage(files[0]);
     getBase64(files[0]);
-    // setPreviewImage();
+    setDocument("");
   };
   const docUpload = () => {
     inputDoc.current.click();
   };
+  // send message
   const messageSend = async () => {
-    await addDoc(
-      collection(db, "messages", meData.uid + selectedUser.uid, "chat"),
-      {
-        message: inputValue,
-        from: meData.uid,
-        to: selectedUser.uid,
-        createdAt: Timestamp.fromDate(new Date()),
+    // sending text message
+    if (!image && !document) {
+      await addDoc(
+        collection(
+          db,
+          "messages",
+          [meData.uid, selectedUser.uid].sort().join(""),
+          "chat"
+        ),
+        {
+          message: inputValue,
+          from: meData.uid,
+          to: selectedUser.uid,
+          createdAt: Timestamp.fromDate(new Date()),
+          id: uuidv4(),
+        }
+      );
+      setInputValue("");
+    }
+    // sending file to firebase storage and make a download url from the storage snapshot
+    else {
+      try {
+        const storageRef = ref(
+          storage,
+          image
+            ? `files/${uuidv4()}-${image.name}`
+            : `files/${uuidv4()}-${document.name}`
+        );
+        const snapshot = await uploadBytes(storageRef, image || document);
+        const response = await getDownloadURL(snapshot.ref);
+        // sending the download url to firestore
+        await addDoc(
+          collection(
+            db,
+            "messages",
+            [meData.uid, selectedUser.uid].sort().join(""),
+            "chat"
+          ),
+          {
+            message: response,
+            from: meData.uid,
+            to: selectedUser.uid,
+            createdAt: Timestamp.fromDate(new Date()),
+            id: uuidv4(),
+          }
+        );
+        setImage("");
+        setPreviewImage("");
+        setDocument("");
+      } catch (err) {
+        console.log(err);
+      }
+    }
+  };
+  // fetching all messages of a selected user and store it in a usestate to show
+  useEffect(() => {
+    const messagesRef = collection(
+      db,
+      "messages",
+      [meData.uid, selectedUser.uid].sort().join(""),
+      "chat"
+    );
+    const q = query(messagesRef, orderBy("createdAt", "asc"));
+    const unsubscribe = onSnapshot(
+      q,
+      (snapshot) => {
+        const message = [];
+        snapshot.forEach((doc) => {
+          message.push(doc.data());
+        });
+        setAllMessages(message);
+        console.log(message);
+      },
+      (error) => {
+        console.error("Error fetching messages: ", error);
       }
     );
-    setInputValue("");
-  };
+    return () => unsubscribe();
+  }, [meData.uid, selectedUser.uid]);
+
   return (
     <div className="total-home">
       <div className="home-left-section">
@@ -153,7 +236,7 @@ const Home = () => {
               setSearchValue(e.target.value);
             }}
           />
-          <button className="button">+</button>
+          {/* <button className="button">+</button> */}
           <button
             className="logOut"
             onClick={() => {
@@ -176,10 +259,11 @@ const Home = () => {
           </button>
         </div>
         <div className="top-bottom-section">
-          {allUserData?.map((item) => {
+          {allUserData?.map((item, i) => {
             return (
               <ChatCard
                 image={item?.photoURL}
+                key={i}
                 name={item?.displayName}
                 uid={item?.uid}
                 clickedUser={() => {
@@ -212,12 +296,31 @@ const Home = () => {
               </Modal>
             </div>
             <div className="middle-right-section">
-              <SenderCard />
-              <ReceiverCard />
-              <SenderCard />
-              <SenderCard />
-              <ReceiverCard />
-              <SenderCard />
+              {allMessages.map((item) => {
+                if (item.from === meData.uid) {
+                  return (
+                    <ReceiverCard
+                      message={item?.message}
+                      image={meData?.photoURL}
+                      fromName={meData?.displayName}
+                      toName={selectedUser?.details?.displayName}
+                      key={item.id}
+                      time={item?.createdAt}
+                    />
+                  );
+                } else {
+                  return (
+                    <SenderCard
+                      key={item.id}
+                      message={item?.message}
+                      image={selectedUser?.details?.photoURL}
+                      fromName={selectedUser?.details?.displayName}
+                      toName={meData?.displayName}
+                      time={item?.createdAt}
+                    />
+                  );
+                }
+              })}
             </div>
             <div className="bottom-right-section">
               <div className="input-card">
@@ -233,6 +336,7 @@ const Home = () => {
                   ref={inputImage}
                   onChange={handleImageUpload}
                   type="file"
+                  value=""
                   accept=".png, .jpg, .jpeg"
                 />
                 <button style={{ fontSize: "24px" }} onClick={imageUpload}>
@@ -243,6 +347,7 @@ const Home = () => {
                   ref={inputDoc}
                   onChange={handleFileUpload}
                   type="file"
+                  value=""
                   accept=".doc,.docx,.xml,.pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
                 />
                 <button style={{ fontSize: "25px" }} onClick={docUpload}>
@@ -258,6 +363,21 @@ const Home = () => {
                       onClick={() => {
                         setImage("");
                         setPreviewImage("");
+                      }}
+                    >
+                      <ImCross />
+                    </button>
+                  </div>
+                )}
+                {document && (
+                  <div className="image-preview file">
+                    <span>
+                      <IoAttach />
+                    </span>
+                    <p>{document?.name}</p>
+                    <button
+                      onClick={() => {
+                        setDocument("");
                       }}
                     >
                       <ImCross />

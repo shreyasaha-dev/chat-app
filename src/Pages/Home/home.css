@@ -48,15 +48,15 @@
   border: 3px solid #daf7e3;
 }
 .top-left-section {
-  padding: 20px 25px;
+  padding: 20px 35px;
   border-bottom: solid 2px #f3f5f7;
 }
 .top-left-section > input {
   padding: 10px 20px;
   border: 3px solid #f3f5f7;
   border-radius: 5px;
-  margin-right: 10px;
-  width: 220px;
+  margin-right: 15px;
+  width: 235px;
   font-size: 15px;
   outline: none;
 }
@@ -120,6 +120,27 @@
   position: absolute;
   right: 0;
   bottom: 55px;
+  width: 200px;
+  height: 200px;
+  border-radius: 15px;
+  box-shadow: 0 0 15px lightgray;
+}
+.file {
+  background-color: #eeeeee;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding: 10px;
+}
+.image-preview > span {
+  font-size: 50px;
+  color: rgb(180, 176, 176);
+  font-weight: bold;
+}
+.image-preview > P {
+  color: gray;
+  text-align: center;
 }
 .image-preview > img {
   width: 200px;
@@ -154,7 +175,7 @@
   border: none;
   outline: none;
   font-size: 30px;
-  color: black;
+  color: white;
   width: 48px;
   height: 48px;
   border-radius: 100%;

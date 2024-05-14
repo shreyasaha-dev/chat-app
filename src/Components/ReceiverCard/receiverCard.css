@@ -7,6 +7,7 @@
 .total-receiver-card > img {
   width: 40px;
   height: 40px;
+  border-radius: 100%;
   margin-left: 15px;
 }
 .receiver-left-section {
@@ -37,4 +38,41 @@
   margin-top: 5px;
   color: rgb(70, 67, 67);
   text-align: left;
+}
+.doc-preview {
+  background-color: rgb(231, 231, 231);
+  padding: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px;
+  position: relative;
+}
+.doc-preview > span {
+  font-size: 35px;
+  color: rgb(121, 120, 120);
+}
+.download-button {
+  position: relative;
+  /* font-size: 10px; */
+  top: 15px;
+  left: 90px;
+  color: rgb(73, 71, 71);
+  font-size: 20px;
+  cursor: pointer;
+}
+.image-view {
+  position: relative;
+}
+.image-view > img {
+  height: 300px;
+  width: 300px;
+  margin-top: 15px;
+}
+.image-view > span {
+  position: absolute;
+  bottom: 5px;
+  right: 10px;
+  font-size: 25px;
+  cursor: pointer;
 }
