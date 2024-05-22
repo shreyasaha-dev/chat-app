@@ -20,9 +20,11 @@ import {
   Timestamp,
   addDoc,
   collection,
+  doc,
   onSnapshot,
   orderBy,
   query,
+  setDoc,
   where,
 } from "firebase/firestore";
 import { storeUserData } from "../../store/Reducer/userDataReducer";
@@ -146,6 +148,7 @@ const Home = () => {
   // send message
   const messageSend = async () => {
     // sending text message
+    const timeStamp = Timestamp.fromDate(new Date());
     if (!image && !document) {
       await addDoc(
         collection(
@@ -158,7 +161,20 @@ const Home = () => {
           message: inputValue,
           from: meData.uid,
           to: selectedUser.uid,
-          createdAt: Timestamp.fromDate(new Date()),
+          createdAt: timeStamp,
+          id: uuidv4(),
+        }
+      );
+      await setDoc(
+        doc(
+          collection(db, "lastMessages"),
+          [meData.uid, selectedUser.uid].sort().join("")
+        ),
+        {
+          message: inputValue,
+          from: meData.uid,
+          to: selectedUser.uid,
+          createdAt: timeStamp,
           id: uuidv4(),
         }
       );
@@ -187,7 +203,20 @@ const Home = () => {
             message: response,
             from: meData.uid,
             to: selectedUser.uid,
-            createdAt: Timestamp.fromDate(new Date()),
+            createdAt: timeStamp,
+            id: uuidv4(),
+          }
+        );
+        await setDoc(
+          doc(
+            collection(db, "lastMessages"),
+            [meData.uid, selectedUser.uid].sort().join("")
+          ),
+          {
+            message: image ? "📷 Image" : "📄 Document",
+            from: meData.uid,
+            to: selectedUser.uid,
+            createdAt: timeStamp,
             id: uuidv4(),
           }
         );
@@ -224,7 +253,17 @@ const Home = () => {
     );
     return () => unsubscribe();
   }, [meData.uid, selectedUser.uid]);
-
+  const containerRef = useRef(null);
+  useEffect(() => {
+    if (containerRef && containerRef.current) {
+      const element = containerRef.current;
+      element.scroll({
+        top: element.scrollHeight,
+        left: 0,
+        behavior: "smooth",
+      });
+    }
+  }, [containerRef, allMessages]);
   return (
     <div className="total-home">
       <div className="home-left-section">
@@ -295,7 +334,7 @@ const Home = () => {
                 <CallerModal close={onCloseModal} />
               </Modal>
             </div>
-            <div className="middle-right-section">
+            <div className="middle-right-section" ref={containerRef}>
               {allMessages.map((item) => {
                 if (item.from === meData.uid) {
                   return (

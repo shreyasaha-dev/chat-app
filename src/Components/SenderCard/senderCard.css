@@ -21,6 +21,7 @@
   background-color: white;
   padding: 20px;
   border-radius: 8px;
+  box-shadow: 0 0 15px lightgray;
 }
 .sender-chat > h4 > span {
   color: rgb(184, 183, 183);
@@ -35,7 +36,4 @@
   margin-top: 5px;
   color: rgb(70, 67, 67);
   text-align: right;
-}
-.doc-preview {
-  background-color: red;
 }

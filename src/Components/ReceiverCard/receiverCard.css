@@ -14,6 +14,7 @@
   background-color: #b0edc4;
   padding: 20px;
   border-radius: 8px;
+  box-shadow: 0 0 10px #71b689;
 }
 .receiver-left-section > h4 > span {
   color: #71b689;
@@ -40,7 +41,7 @@
   text-align: left;
 }
 .doc-preview {
-  background-color: rgb(231, 231, 231);
+  background-color: rgb(236, 234, 234);
   padding: 8px;
   display: flex;
   justify-content: center;
@@ -50,7 +51,7 @@
 }
 .doc-preview > span {
   font-size: 35px;
-  color: rgb(121, 120, 120);
+  color: rgb(238, 62, 62);
 }
 .download-button {
   position: relative;
