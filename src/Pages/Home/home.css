@@ -1,13 +1,16 @@
 .total-home {
   display: flex;
+  height: 100vh;
   justify-content: center;
   align-items: flex-start;
 }
 .home-left-section {
   width: 30%;
+  height: 100vh;
 }
 .home-right-section {
   width: 70%;
+  height: 100vh;
   border-left: solid 2px #f3f5f7;
 }
 .total-right-section {
@@ -98,6 +101,7 @@
   display: flex;
   justify-content: flex-start;
   align-items: center;
+  position: sticky;
 }
 .input-card > input {
   width: 85%;
@@ -123,7 +127,7 @@
   width: 200px;
   height: 200px;
   border-radius: 15px;
-  box-shadow: 0 0 15px lightgray;
+  /* box-shadow: 0 0 7px lightgray; */
 }
 .file {
   background-color: #eeeeee;
@@ -188,4 +192,29 @@
 }
 .customModal {
   border-radius: 10px;
+}
+@media only screen and (max-width: 1024px) {
+  .top-left-section > input {
+    padding: 10px;
+    margin-right: 0;
+    width: 180px;
+  }
+  .logOut {
+    font-size: 15px;
+    margin-left: 10px;
+  }
+  .top-left-section {
+    padding: 20px 22px;
+  }
+  .middle-right-section {
+    height: 525px;
+  }
+  .bottom-right-section > button {
+    font-size: 27px;
+    width: 55px;
+    height: 45px;
+  }
+  .image-preview {
+    bottom: 60px;
+  }
 }

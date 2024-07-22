@@ -54,3 +54,15 @@
   height: 20px;
   border-radius: 100%;
 }
+@media only screen and (max-width: 360px) {
+  .login-middle {
+    width: 250px;
+    padding: 30px 20px;
+  }
+  .login-middle > p {
+    margin: 15px 0 25px;
+  }
+  .login-middle > button {
+    padding: 10px 20px;
+  }
+}

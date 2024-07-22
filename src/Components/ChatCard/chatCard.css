@@ -21,10 +21,27 @@
 }
 .card-right-section > h4 > span {
   color: rgb(184, 183, 183);
-  margin-left: 70px;
+  margin-left: 90px;
   font-size: 15px;
 }
 .card-right-section > p {
   color: rgb(184, 183, 183);
   font-size: 15px;
+}
+@media only screen and (max-width: 1024px) {
+  .total-card {
+    padding: 20px 22px;
+  }
+  .total-card > img {
+    width: 32px;
+    height: 32px;
+  }
+  .card-right-section > h4 > span {
+    margin-left: 35px;
+    font-size: 13px;
+  }
+  .card-right-section > h4 {
+    font-size: 17px;
+    margin-bottom: 7px;
+  }
 }
